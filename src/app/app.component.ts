@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import * as echarts from 'echarts';
 import { englishBackEndData } from './english';
 
@@ -7,7 +7,16 @@ import { englishBackEndData } from './english';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+  eChartYAxis!: echarts.ECharts;
+  eChart1!: echarts.ECharts;
+  eChart2!: echarts.ECharts;
+  eChart3!: echarts.ECharts;
+
+  ngAfterViewInit(): void {
+    // this.eChartYAxis = echarts.init(document.getElementById('yAxisChart')!);
+    // this.eChartYAxis.setOption(this.yAxisOption);
+  }
 
   ngOnInit(): void {
     const backEndData = englishBackEndData;
@@ -15,44 +24,47 @@ export class AppComponent implements OnInit {
       `english.js loaded backEndData: ${JSON.stringify(backEndData)}`
     );
 
-    const eChartYAxis = echarts.init(document.getElementById('yAxisChart')!);
-    const eChart1 = echarts.init(document.getElementById('chart1')!);
-    const eChart2 = echarts.init(document.getElementById('chart2')!);
-    const eChart3 = echarts.init(document.getElementById('chart3')!);
-
-    // window.addEventListener('resize', resize);
-    // function resize() {
-    //   console.log('Resize');
-    //   eChartYAxis.resize();
-    //   eChart2.resize();
-    //   eChart3.resize();
-    //   eChart4.resize();
-    // }
-    eChartYAxis.setOption(this.yAxisOption);
+    this.eChart1 = echarts.init(document.getElementById('chart1')!);
+    // this.eChart2 = echarts.init(document.getElementById('chart2')!);
+    // this.eChart3 = echarts.init(document.getElementById('chart3')!);
 
     // MINI CHARTS
-    eChart2.setOption(this.miniChartOption);
-    eChart2.setOption({
-      xAxis: [{}, {}, { data: '1' }],
+    this.eChart1.setOption( {
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
       series: [
         {
-          data: [53.1056, 22.98, 0.93, 0, 19.25, 3.72, 0],
-        },
-      ],
+          data: [120, 200, 150, 80, 70, 110, 130],
+          type: 'bar'
+        }
+      ]
     });
-    eChart3.setOption(this.miniChartOption);
-    eChart3.setOption({
-      xAxis: [{}, {}, { data: '2' }],
-      series: [
-        {
-          data: [46.1, 23.9, 0.93, 0, 22.36, 4.96, 0.93],
-        },
-      ],
-    });
-    eChart3.setOption(this.miniChartOption);
-    eChart3.setOption({
-      xAxis: [{}, {}, { data: '3' }],
-    });
+    // this.eChart1.setOption({
+    //   xAxis: [{}, {}, { data: '1' }],
+    //   series: [
+    //     {
+    //       data: [53.1056, 22.98, 0.93, 0, 19.25, 3.72, 0],
+    //     },
+    //   ],
+    // });
+    // this.eChart3.setOption(this.miniChartOption);
+    // this.eChart3.setOption({
+    //   xAxis: [{}, {}, { data: '2' }],
+    //   series: [
+    //     {
+    //       data: [46.1, 23.9, 0.93, 0, 22.36, 4.96, 0.93],
+    //     },
+    //   ],
+    // });
+    // this.eChart3.setOption(this.miniChartOption);
+    // this.eChart3.setOption({
+    //   xAxis: [{}, {}, { data: '3' }],
+    // });
   }
 
   yAxisOption = {
@@ -63,14 +75,14 @@ export class AppComponent implements OnInit {
     xAxis: [
       {
         show: false,
-        name: 'Difference between mark awarded and correct mark',
-        nameLocation: 'middle',
-        nameTextStyle: {
-          padding: [15, 0, 0, 0],
-          color: 'black',
-          fontSize: 14,
-          fontWeight: 'bold',
-        },
+        // name: "Difference between mark awarded and correct mark",
+        // nameLocation: "middle",
+        // nameTextStyle: {
+        //   padding: [15, 0, 0, 0],
+        //   color: "black",
+        //   fontSize: 14,
+        //   fontWeight: "bold",
+        // },
       },
     ],
     yAxis: {
@@ -86,9 +98,7 @@ export class AppComponent implements OnInit {
       },
       axisLabel: {
         show: true,
-        formatter: function (value: string) {
-          return value + '%';
-        },
+        formatter: '{value}%',
       },
       minorSplitLine: {
         show: false,
@@ -113,7 +123,7 @@ export class AppComponent implements OnInit {
         data: [46.1, 23.9, 0.93, 0, 22.36, 4.96, 0.93],
       },
     ],
-  };
+  } as echarts.EChartsOption;
 
   miniChartOption = {
     z: -2,
@@ -200,4 +210,20 @@ export class AppComponent implements OnInit {
       },
     ],
   };
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.resizeCharts();
+  }
+
+  resizeCharts() {
+    // this.eChartYAxis.resize();
+    this.eChart1.resize();
+    if (this.eChart2) {
+      this.eChart2.resize();
+    }
+    if (this.eChart2) {
+      this.eChart2.resize();
+    }
+  }
 }
