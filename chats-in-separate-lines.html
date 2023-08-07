@@ -1,0 +1,232 @@
+<style>
+  .yAxisContainer {
+    display: flex;
+    flex-direction: column;
+    width: 10%;
+    height: 100%;
+    /* overflow: hidden; */
+    /* z-index: -1; */
+  }
+  .container {
+    border-width: 1px solid;
+    border-color: black;
+    display: flex;
+    flex-direction: column;
+    /* Set the container height to cover the full viewport */
+    height: 100vh;
+    height: 100%;
+    width: 100%;
+  }
+
+  .topOne {
+    border-width: 1px solid;
+    border-color: black;
+    flex: 1; /* Allow the top div to grow and take available space */
+  }
+
+  .middle {
+    border-width: 1px solid;
+    border-color: black;
+    flex: 1; /* Allow the middle div to grow and take available space */
+  }
+
+  .bottom {
+    /* Prevent the bottom div from growing and taking space */
+    /* flex: 0; */
+    flex: 1;
+  }
+
+  .yAxisChart {
+    flex: 1;
+  }
+  .chart-wrapper,
+  .nav-tabs-custom,
+  .sbframe-commentary {
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+  }
+</style>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"
+></script>
+<!-- <div>Two charts, should expand and shrink fine.</div>
+<div id="container" class="container">
+</div>
+ -->
+
+<div id="row-3" style="display: flex; height: 531.667px; flex: 0 0 531.667px">
+  <div
+    id="number-of-active-markers-by-day"
+    class="section level3 chart-wrapper chart-wrapper-flex"
+    style="flex: 576 576 0px"
+  >
+    <div class="chart-title">Overall</div>
+    <div class="chart-stage chart-stage-flex">
+      <div id="overallChart">test</div>
+    </div>
+  </div>
+  <div
+    id="total-number-of-scripts-marked-by-day"
+    class="section level3 chart-wrapper chart-wrapper-flex"
+    style="flex: 576 576 0px"
+  >
+    <div class="chart-title">Accuracy by queue position</div>
+    <div class="chart-stage chart-stage-flex">
+      <div
+        style="border: 1px solid red; display: flex; width: 100%; height: 100%"
+      >
+        <div class="yAxisContainer" style="border: 1px solid #000">
+          <div id="chart0" class="yAxisChart"></div>
+        </div>
+        <div class="container" style="border: 1px solid #000">
+          <div id="chart1" class="topOne"></div>
+          <div id="chart2" class="middle">bbb</div>
+          <div id="chart3" class="bottom">cc</div>
+        </div>
+      </div>
+      <!-- <div class="container">
+        <div id="chart0" class="yAxisChart"></div>
+        <div id="chart1" class="topOne"></div>
+        <div id="chart2" class="middle">bbb</div>
+        <div id="chart3" class="bottom">cc</div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<script>
+  var optionCharts = {
+    height: "60%",
+    grid: {
+      top: "10%",
+      bottom: "10%",
+      height: "75%",
+    },
+    xAxis: [
+      {
+        type: "category",
+        data: ["Label 1", "Label 2", "Label 3"],
+        axisLabel: {
+          margin: 5,
+        },
+        axisTick: {
+          alignWithLabel: true,
+        },
+      },
+      // black line at the top
+      {
+        position: "top",
+        offset: 22,
+        axisLine: {
+          show: true, // Show the top axis line
+          onZero: false, // Do not force the axis to start at zero
+          lineStyle: {
+            // color: "black", // Color of the top axis line
+            width: 1, // Width of the top axis line
+          },
+        },
+        axisTick: {
+          show: false, // Hide the top axis tick marks
+        },
+        axisLabel: {
+          show: false, // Hide the labels on the top axis
+        },
+      },
+      {
+        position: "top",
+        offset: 2,
+        axisLine: {
+          show: true,
+        },
+        axisTick: {
+          // show: false
+          length: 20,
+          interval: 0,
+          //gapWidth: 10,
+        },
+        data: ["1", "2", "3"],
+        axisLabel: {
+          fontWeight: "bolder",
+          margin: 1,
+        },
+      },
+    ],
+    yAxis: {
+      type: "value",
+      minInterval: 25,
+      maxInterval: 25,
+      splitLine: {
+        show: false,
+      },
+      minorSplitLine: {
+        show: false,
+      },
+    },
+    series: [
+      {
+        // height: "100%",
+        type: "bar",
+        seriesLayoutBy: "row",
+        data: [10, 20, 30],
+      },
+    ],
+  };
+
+  yAxisOption = {
+    grid: {
+      left: "30%",
+    },
+    xAxis: {
+      show: false,
+    },
+    yAxis: {
+      z: -1,
+      type: "value",
+      name: "Difference Percentage of start-up scripts",
+      nameLocation: "middle",
+      nameTextStyle: {
+        padding: [0, 0, -30, 0],
+        color: "black",
+        fontSize: 14,
+      },
+      axisLine: {
+        show: false,
+      },
+    },
+    series: [{}],
+  };
+
+  var yAxisChartDiv = document.getElementById("chart0");
+  var chart1Div = document.getElementById("chart1");
+  var chart2Div = document.getElementById("chart2");
+  var chart3Div = document.getElementById("chart3");
+
+  var eChart0 = echarts.init(yAxisChartDiv);
+  var eChart1 = echarts.init(chart1);
+  var eChart2 = echarts.init(chart2Div);
+  var eChart3 = echarts.init(chart3Div);
+
+  window.addEventListener("resize", resize);
+  function resize() {
+    console.log("Resize");
+    eChart0.resize();
+    eChart1.resize();
+    eChart2.resize();
+    eChart3.resize();
+  }
+  eChart0.setOption(yAxisOption);
+  eChart1.setOption(optionCharts);
+  eChart2.setOption(optionCharts);
+  eChart3.setOption(optionCharts);
+  chart1Div.style.display = "none";
+  eChart2.resize();
+  eChart3.resize();
+
+  // chart3.style.display = "none";
+  // if you don't have the middle chart, bottom one should move up and take the space
+  // chart2.style.display = "none";
+</script>
